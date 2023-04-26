@@ -4,11 +4,7 @@ local StarterCharacterScripts = StarterPlayer:WaitForChild("StarterCharacterScri
 local Animate = script:WaitForChild("Animate")
 
 local found = StarterCharacterScripts:FindFirstChild(Animate.Name)
-if not found or not found.Enabled then
-	if found then
-		found:Destroy()
-	end
-
+if not found then
 	Animate:Clone().Parent = StarterCharacterScripts
 end
 
