@@ -140,10 +140,6 @@ local EMOTE_NAMES: {[string]: boolean} = {
 local module = {}
 local random = Random.new()
 
--- selene: allow(multiple_statements)
-local userNoUpdateOnLoopSuccess, userNoUpdateOnLoopValue = pcall(function() return UserSettings():IsUserFeatureEnabled("UserNoUpdateOnLoop") end)
-local userNoUpdateOnLoop = userNoUpdateOnLoopSuccess and userNoUpdateOnLoopValue
-
 -- Private
 
 local function stopAllPlayingAnimationsOnHumanoid(humanoid: Humanoid)
