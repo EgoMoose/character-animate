@@ -8,4 +8,6 @@ local dummy = workspace.Dummy
 local dummyHumanoid = dummy:WaitForChild("Humanoid")
 
 CharacterAnimate.animate(script, humanoid)
-CharacterAnimate.animate(script, humanoid, dummyHumanoid)
+
+local controller = CharacterAnimate.animateManually(script, dummyHumanoid)
+controller.fireState(Enum.HumanoidStateType.Climbing, 5)
