@@ -2,10 +2,14 @@
 
 local Packages = script.Parent.Parent
 local Signal = require(Packages:WaitForChild("Signal"))
+local SharedTypes = require(script.Parent:WaitForChild("SharedTypes"))
 
 type ScriptSignal = RBXScriptSignal & {
 	Fire: (...any) -> ()
 }
+
+type SetMovement = (Vector3, number) -> ()
+type FireState = (Enum.HumanoidStateType, ...any) -> ()
 
 export type ManualHumanoid = {
 	Died: ScriptSignal,
@@ -23,10 +27,12 @@ export type ManualHumanoid = {
 	WalkSpeed: number,
 }
 
-export type SetMovement = (Vector3, number) -> ()
-export type FireState = (Enum.HumanoidStateType, ...any) -> ()
+export type AnimateControllerManually = SharedTypes.AnimateController & {
+	fireState: FireState,
+	setMovement: SetMovement,
+}
 
-export type Director = {
+type Director = {
 	fireState: FireState,
 	setMovement: SetMovement,
 	humanoid: ManualHumanoid,

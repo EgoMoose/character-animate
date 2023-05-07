@@ -10,20 +10,7 @@ local CONFIGURATION: {[string]: number} = {
 	EMOTE_TRANSITION_TIME = 0.1,
 }
 
-type SerializedAnimation = {
-	id: string,
-	weight: number,
-}
-
-type AnimationSet = {
-	count: number,
-	totalWeight: number,
-	connections: {RBXScriptConnection},
-	entries: {{
-		animation: Animation,
-		weight: number,
-	}}
-}
+local SharedTypes = require(script.Parent:WaitForChild("SharedTypes"))
 
 type AnimationState = {
 	pose: string,
@@ -52,18 +39,11 @@ type AnimationState = {
 	currentlyPlayingEmote: boolean,
 }
 
-type AnimationEntity = {
-	sets: {[string]: AnimationSet},
-	state: AnimationState,
-
-	meta: {
-		director: Humanoid,
-		performer: Humanoid,
-		animator: Animator,
-
-		preloaded: {[string]: boolean},
-		parent: Instance,
-	}
+type AnimateController = SharedTypes.AnimateController
+type SerializedAnimation = SharedTypes.SerializedAnimation
+type AnimationSet = SharedTypes.AnimationSet
+type AnimationEntity = SharedTypes.AnimationEntityNoState & {
+	state: AnimationState
 }
 
 local SERIALIZED_DEFAULT_ANIMATIONS: {[string]: {SerializedAnimation}} = {
@@ -572,7 +552,7 @@ end
 
 -- Public
 
-function module.animate(parent: Instance, director: Humanoid, performer: Humanoid)
+function module.animate(parent: Instance, director: Humanoid, performer: Humanoid): AnimateController
 	local connections: {RBXScriptConnection} = {}
 
 	local animator = nil
@@ -693,7 +673,10 @@ function module.animate(parent: Instance, director: Humanoid, performer: Humanoi
 		stopAllPlayingAnimationsOnHumanoid(performer)
 	end
 
-	return cleanup, playEmote
+	return {
+		playEmote = playEmote,
+		cleanup = cleanup,
+	}
 end
 
 return module
