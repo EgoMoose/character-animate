@@ -1,5 +1,7 @@
 --!strict
 
+local ExportedTypes = require(script.Parent:WaitForChild("ExportedTypes"))
+
 local CONFIGURATION: {[string]: number} = {
 	HUMANOID_HIP_HEIGHT = 2,
 
@@ -10,41 +12,10 @@ local CONFIGURATION: {[string]: number} = {
 	EMOTE_TRANSITION_TIME = 0.1,
 }
 
-local SharedTypes = require(script.Parent:WaitForChild("SharedTypes"))
-
-type AnimationState = {
-	pose: string,
-
-	rightShoulder: Motor6D,
-	leftShoulder: Motor6D,
-	rightHip: Motor6D,
-	leftHip: Motor6D,
-	neck: Motor6D,
-
-	currentAnim: string,
-	currentAnimInstance: Animation?,
-	currentAnimTrack: AnimationTrack?,
-	currentAnimKeyframeHandler: RBXScriptConnection?,
-	currentAnimSpeed: number,
-
-	toolAnim: string,
-	toolAnimInstance: Animation?,
-	toolAnimTrack: AnimationTrack?,
-	currentToolAnimKeyframeHandler: RBXScriptConnection?,
-
-	legacyToolAnim: string,
-	legacyToolAnimTime: number,
-
-	jumpAnimTime: number,
-	currentlyPlayingEmote: boolean,
-}
-
-type AnimateController = SharedTypes.AnimateController
-type SerializedAnimation = SharedTypes.SerializedAnimation
-type AnimationSet = SharedTypes.AnimationSet
-type AnimationEntity = SharedTypes.AnimationEntityNoState & {
-	state: AnimationState
-}
+type AnimateController = ExportedTypes.AnimateController
+type SerializedAnimation = ExportedTypes.SerializedAnimation
+type AnimationSet = ExportedTypes.AnimationSet
+type AnimationEntity = ExportedTypes.AnimationEntityR6
 
 local SERIALIZED_DEFAULT_ANIMATIONS: {[string]: {SerializedAnimation}} = {
 	idle = 	{	
