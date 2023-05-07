@@ -1,5 +1,5 @@
 # Character Animate
-An implementation of the default `Animate` script that is typically loaded into characters by default.
+A replacement implementation of the `Animate` script that is typically loaded into characters by default.
 
 Get it here:
 
@@ -10,7 +10,7 @@ Get it here:
 
 ```Lua
 --[=[
-Creates a new animate process
+Creates a new animate controller
 
 @param parent Instance -- The instance where custom animations will be loaded from
 @param director Humanoid -- The humanoid used to track state for transitioning animations
@@ -23,11 +23,10 @@ Creates a new animate process
 function module.animate(parent: Instance, director: Humanoid, performer: Humanoid?): AnimateController
 
 --[=[
-Creates a new animate process that can be controlled manually
+Creates a new animate controller that can transition states manually
 
 @param parent Instance -- The instance where custom animations will be loaded from
-@param director Humanoid -- The humanoid used to track state for transitioning animations
-@param performer Humanoid? -- The humanoid the animations will play on. Defaults to `director` if nil
+@param performer Humanoid -- The humanoid the animations will play on
 @return AnimateControllerManually: {
 	cleanup: () -> (), -- stops the animate process
 	playEmote: (string | Animation) -> (boolean, AnimationTrack?) -- play an emote either by string name or animation instance
@@ -35,7 +34,7 @@ Creates a new animate process that can be controlled manually
 	setMovement: (Vector3, number) -> (), -- set humanoid MoveDirection and WalkSpeed properties for animation calculation
 }
 --]=]
-function module.animateManually(parent: Instance, director: Humanoid): AnimateControllerManually
+function module.animateManually(parent: Instance, performer: Humanoid): AnimateControllerManually
 ```
 
 An example of using this package to replicate the standard `Animate` script:
