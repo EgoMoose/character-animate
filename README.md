@@ -1,6 +1,13 @@
 # Character Animate
 An implementation of the default `Animate` script that is typically loaded into characters by default.
 
+Get it here:
+
+* [Wally](https://wally.run/package/egomoose/character-animate)
+* [Releases](https://github.com/EgoMoose/character-animate/releases)
+
+## API
+
 ```Lua
 --[=[
 Creates a new animate process
@@ -16,7 +23,7 @@ Creates a new animate process
 function module.animate(parent: Instance, director: Humanoid, performer: Humanoid?): AnimateController
 
 --[=[
-Creates a new animate process that can be controller manually
+Creates a new animate process that can be controlled manually
 
 @param parent Instance -- The instance where custom animations will be loaded from
 @param director Humanoid -- The humanoid used to track state for transitioning animations
