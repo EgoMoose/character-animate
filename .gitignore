@@ -2,5 +2,8 @@
 /assets
 
 sourcemap.json
-release.rbxm
 wally.lock
+
+release.lua
+release.rbxm
+release.project.json
