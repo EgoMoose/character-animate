@@ -2,35 +2,11 @@
 
 local Packages = script.Parent.Parent
 local Signal = require(Packages:WaitForChild("Signal"))
+local ExportedTypes = require(script.Parent:WaitForChild("ExportedTypes"))
 
-type ScriptSignal = RBXScriptSignal & {
-	Fire: (...any) -> ()
-}
-
-export type ManualHumanoid = {
-	Died: ScriptSignal,
-	Running: ScriptSignal,
-	Jumping: ScriptSignal,
-	Climbing: ScriptSignal,
-	GettingUp: ScriptSignal,
-	FreeFalling: ScriptSignal,
-	FallingDown: ScriptSignal,
-	Seated: ScriptSignal,
-	PlatformStanding: ScriptSignal,
-	Swimming: ScriptSignal,
-
-	MoveDirection: Vector3,
-	WalkSpeed: number,
-}
-
-export type SetMovement = (Vector3, number) -> ()
-export type FireState = (Enum.HumanoidStateType, ...any) -> ()
-
-export type Director = {
-	fireState: FireState,
-	setMovement: SetMovement,
-	humanoid: ManualHumanoid,
-}
+type AnimateControllerManually = ExportedTypes.AnimateControllerManually
+type ManualHumanoid = ExportedTypes.ManualHumanoid
+type ManualDirector = ExportedTypes.ManualDirector
 
 local MAP_STATE_TO_SIGNAL = {
 	[Enum.HumanoidStateType.Dead] = "Died",
@@ -47,7 +23,7 @@ local MAP_STATE_TO_SIGNAL = {
 
 local module = {}
 
-function module.create(): Director
+function module.create(): ManualDirector
 	local humanoid: ManualHumanoid = {
 		Died = Signal.new(),
 		Running = Signal.new(),

@@ -1,5 +1,7 @@
 --!strict
 
+local ExportedTypes = require(script.Parent:WaitForChild("ExportedTypes"))
+
 local CONFIGURATION: {[string]: number} = {
 	HUMANOID_HIP_HEIGHT = 2,
 
@@ -10,61 +12,10 @@ local CONFIGURATION: {[string]: number} = {
 	EMOTE_TRANSITION_TIME = 0.1,
 }
 
-type SerializedAnimation = {
-	id: string,
-	weight: number,
-}
-
-type AnimationSet = {
-	count: number,
-	totalWeight: number,
-	connections: {RBXScriptConnection},
-	entries: {{
-		animation: Animation,
-		weight: number,
-	}}
-}
-
-type AnimationState = {
-	pose: string,
-
-	rightShoulder: Motor6D,
-	leftShoulder: Motor6D,
-	rightHip: Motor6D,
-	leftHip: Motor6D,
-	neck: Motor6D,
-
-	currentAnim: string,
-	currentAnimInstance: Animation?,
-	currentAnimTrack: AnimationTrack?,
-	currentAnimKeyframeHandler: RBXScriptConnection?,
-	currentAnimSpeed: number,
-
-	toolAnim: string,
-	toolAnimInstance: Animation?,
-	toolAnimTrack: AnimationTrack?,
-	currentToolAnimKeyframeHandler: RBXScriptConnection?,
-
-	legacyToolAnim: string,
-	legacyToolAnimTime: number,
-
-	jumpAnimTime: number,
-	currentlyPlayingEmote: boolean,
-}
-
-type AnimationEntity = {
-	sets: {[string]: AnimationSet},
-	state: AnimationState,
-
-	meta: {
-		director: Humanoid,
-		performer: Humanoid,
-		animator: Animator,
-
-		preloaded: {[string]: boolean},
-		parent: Instance,
-	}
-}
+type AnimateController = ExportedTypes.AnimateController
+type SerializedAnimation = ExportedTypes.SerializedAnimation
+type AnimationSet = ExportedTypes.AnimationSet
+type AnimationEntity = ExportedTypes.AnimationEntityR6
 
 local SERIALIZED_DEFAULT_ANIMATIONS: {[string]: {SerializedAnimation}} = {
 	idle = 	{	
@@ -572,7 +523,7 @@ end
 
 -- Public
 
-function module.animate(parent: Instance, director: Humanoid, performer: Humanoid)
+function module.animate(parent: Instance, director: Humanoid, performer: Humanoid): AnimateController
 	local connections: {RBXScriptConnection} = {}
 
 	local animator = nil
@@ -693,7 +644,10 @@ function module.animate(parent: Instance, director: Humanoid, performer: Humanoi
 		stopAllPlayingAnimationsOnHumanoid(performer)
 	end
 
-	return cleanup, playEmote
+	return {
+		playEmote = playEmote,
+		cleanup = cleanup,
+	}
 end
 
 return module
