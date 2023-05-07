@@ -662,7 +662,21 @@ function module.animate(parent: Instance, director: Humanoid, performer: Humanoi
 
 	coroutine.resume(stepping)
 
-	return function()
+	local function playEmote(emote: string | Animation): (boolean, AnimationTrack?)
+		if entity.state.pose == "Standing" then
+			if typeof(emote) == "string" and EMOTE_NAMES[emote] ~= nil then
+				actions.playAnimation(entity, emote, CONFIGURATION.EMOTE_TRANSITION_TIME)
+				return true, entity.state.currentAnimTrack
+			elseif typeof(emote) == "Instance" and emote:IsA("Animation") then
+				actions.playEmote(entity, emote, CONFIGURATION.EMOTE_TRANSITION_TIME)
+				return true, entity.state.currentAnimTrack
+			end
+		end
+
+		return false
+	end
+
+	local function cleanup()
 		coroutine.close(stepping)
 		actions.stopAllAnimations(entity)
 
@@ -678,6 +692,8 @@ function module.animate(parent: Instance, director: Humanoid, performer: Humanoi
 
 		stopAllPlayingAnimationsOnHumanoid(performer)
 	end
+
+	return cleanup, playEmote
 end
 
 return module
