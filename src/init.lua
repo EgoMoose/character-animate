@@ -18,7 +18,7 @@ type AnimateManually = Animate & {
 
 local module = {}
 
-function module.animate(parent: Instance, director: Humanoid | ManualHumanoid, performer: Humanoid?): Animate
+local function animateInternal(parent: Instance, director: Humanoid | ManualHumanoid, performer: Humanoid?): Animate
 	local castedDirector = director :: Humanoid
 	local actor = performer or castedDirector
 
@@ -35,9 +35,13 @@ function module.animate(parent: Instance, director: Humanoid | ManualHumanoid, p
 	}
 end
 
+function module.animate(parent: Instance, director: Humanoid, performer: Humanoid?): Animate
+	return animateInternal(parent, director, performer)
+end
+
 function module.animateManually(parent: Instance, performer: Humanoid): AnimateManually
 	local director = ManualDirector.create()
-	local animated = module.animate(parent, director.humanoid, performer)
+	local animated = animateInternal(parent, director.humanoid, performer)
 
 	return {
 		cleanup = animated.cleanup,
