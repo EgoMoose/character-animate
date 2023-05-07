@@ -10,4 +10,13 @@ local dummyHumanoid = dummy:WaitForChild("Humanoid")
 CharacterAnimate.animate(script, humanoid)
 
 local controller = CharacterAnimate.animateManually(script, dummyHumanoid)
-controller.fireState(Enum.HumanoidStateType.Climbing, 5)
+while true do
+	controller.fireState(Enum.HumanoidStateType.Climbing, 5)
+	task.wait(4)
+	controller.fireState(Enum.HumanoidStateType.Running, 16)
+	task.wait(2)
+	controller.fireState(Enum.HumanoidStateType.Freefall)
+	task.wait(1)
+	controller.fireState(Enum.HumanoidStateType.Seated)
+	task.wait(2)
+end
