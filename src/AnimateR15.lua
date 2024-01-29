@@ -2,7 +2,7 @@
 
 local ExportedTypes = require(script.Parent:WaitForChild("ExportedTypes"))
 
-local CONFIGURATION: {[string]: number} = {
+local CONFIGURATION: { [string]: number } = {
 	HUMANOID_HIP_HEIGHT = 2,
 
 	JUMP_ANIM_DURATION = 0.31,
@@ -19,7 +19,7 @@ type AnimationEntity = ExportedTypes.AnimationEntityR15
 
 local EPSILON = 1E-4
 
-local SERIALIZED_DEFAULT_ANIMATIONS: {[string]: {SerializedAnimation}} = {
+local SERIALIZED_DEFAULT_ANIMATIONS: { [string]: { SerializedAnimation } } = {
 	idle = {
 		{ id = "rbxassetid://507766666", weight = 1 },
 		{ id = "rbxassetid://507766951", weight = 1 },
@@ -27,28 +27,28 @@ local SERIALIZED_DEFAULT_ANIMATIONS: {[string]: {SerializedAnimation}} = {
 	},
 	walk = {
 		{ id = "rbxassetid://507777826", weight = 10 },
-	}, 
+	},
 	run = {
 		{ id = "rbxassetid://507767714", weight = 10 },
-	}, 
+	},
 	swim = {
 		{ id = "rbxassetid://507784897", weight = 10 },
-	}, 
+	},
 	swimidle = {
 		{ id = "rbxassetid://507785072", weight = 10 },
-	}, 
+	},
 	jump = {
 		{ id = "rbxassetid://507765000", weight = 10 },
-	}, 
+	},
 	fall = {
 		{ id = "rbxassetid://507767968", weight = 10 },
-	}, 
+	},
 	climb = {
 		{ id = "rbxassetid://507765644", weight = 10 },
-	}, 
+	},
 	sit = {
 		{ id = "rbxassetid://2506281703", weight = 10 },
-	},	
+	},
 	toolnone = {
 		{ id = "rbxassetid://507768375", weight = 10 },
 	},
@@ -87,13 +87,13 @@ local SERIALIZED_DEFAULT_ANIMATIONS: {[string]: {SerializedAnimation}} = {
 	},
 }
 
-local EMOTE_NAMES: {[string]: boolean} = {
-	wave = false, 
-	point = false, 
-	dance = true, 
-	dance2 = true, 
-	dance3 = true, 
-	laugh = false, 
+local EMOTE_NAMES: { [string]: boolean } = {
+	wave = false,
+	point = false,
+	dance = true,
+	dance2 = true,
+	dance3 = true,
+	laugh = false,
 	cheer = false,
 }
 
@@ -101,7 +101,9 @@ local module = {}
 local random = Random.new()
 
 -- selene: allow(multiple_statements)
-local userNoUpdateOnLoopSuccess, userNoUpdateOnLoopValue = pcall(function() return UserSettings():IsUserFeatureEnabled("UserNoUpdateOnLoop") end)
+local userNoUpdateOnLoopSuccess, userNoUpdateOnLoopValue = pcall(function()
+	return UserSettings():IsUserFeatureEnabled("UserNoUpdateOnLoop")
+end)
 local userNoUpdateOnLoop = userNoUpdateOnLoopSuccess and userNoUpdateOnLoopValue
 
 -- Private
@@ -151,7 +153,8 @@ local function getLegacyToolAnim(tool: Tool): StringValue?
 	return nil
 end
 
-local actions = {} do
+local actions = {}
+do
 	function actions.refreshAnimationSet(entity: AnimationEntity, name: string)
 		local defaults = SERIALIZED_DEFAULT_ANIMATIONS[name]
 		if not defaults then
@@ -172,7 +175,7 @@ local actions = {} do
 		}
 
 		local allowCustomAnimations = true
-		local success = pcall(function() 
+		local success = pcall(function()
 			allowCustomAnimations = game:GetService("StarterPlayer").AllowCustomAnimations
 		end)
 
@@ -182,13 +185,19 @@ local actions = {} do
 
 		local config = entity.meta.parent:FindFirstChild(name)
 		if allowCustomAnimations and config then
-			table.insert(set.connections, config.ChildAdded:Connect(function()
-				actions.refreshAnimationSet(entity, name)
-			end))
+			table.insert(
+				set.connections,
+				config.ChildAdded:Connect(function()
+					actions.refreshAnimationSet(entity, name)
+				end)
+			)
 
-			table.insert(set.connections, config.ChildRemoved:Connect(function()
-				actions.refreshAnimationSet(entity, name)
-			end))
+			table.insert(
+				set.connections,
+				config.ChildRemoved:Connect(function()
+					actions.refreshAnimationSet(entity, name)
+				end)
+			)
 
 			for _, child in config:GetChildren() do
 				if child:IsA("Animation") then
@@ -206,17 +215,26 @@ local actions = {} do
 						weight = weight,
 					}
 
-					table.insert(set.connections, child.ChildAdded:Connect(function()
-						actions.refreshAnimationSet(entity, name)
-					end))
+					table.insert(
+						set.connections,
+						child.ChildAdded:Connect(function()
+							actions.refreshAnimationSet(entity, name)
+						end)
+					)
 
-					table.insert(set.connections, child.ChildRemoved:Connect(function()
-						actions.refreshAnimationSet(entity, name)
-					end))
+					table.insert(
+						set.connections,
+						child.ChildRemoved:Connect(function()
+							actions.refreshAnimationSet(entity, name)
+						end)
+					)
 
-					table.insert(set.connections, child.Changed:Connect(function()
-						actions.refreshAnimationSet(entity, name)
-					end))
+					table.insert(
+						set.connections,
+						child.Changed:Connect(function()
+							actions.refreshAnimationSet(entity, name)
+						end)
+					)
 				end
 			end
 		end
@@ -324,7 +342,7 @@ local actions = {} do
 		elseif runSpeed < normalizedRunSpeed then
 			local fadeInRun = (runSpeed - normalizedWalkSpeed) / (normalizedRunSpeed - normalizedWalkSpeed)
 			walkAnimationWeight = 1 - fadeInRun
-			runAnimationWeight  = fadeInRun
+			runAnimationWeight = fadeInRun
 			walkAnimationTimewarp = 1
 			runAnimationTimewarp = 1
 		else
@@ -433,7 +451,7 @@ local actions = {} do
 			local currentAnimTrack = entity.meta.animator:LoadAnimation(anim)
 			currentAnimTrack.Priority = Enum.AnimationPriority.Core
 			currentAnimTrack:Play(transitionTime)
-			
+
 			entity.state.currentAnimTrack = currentAnimTrack
 			entity.state.currentAnim = name
 			entity.state.currentAnimInstance = anim
@@ -456,7 +474,7 @@ local actions = {} do
 				runAnimTrack:Play(transitionTime)
 
 				entity.state.runAnimTrack = runAnimTrack
-				
+
 				if entity.state.runAnimKeyframeHandler then
 					entity.state.runAnimKeyframeHandler:Disconnect()
 				end
@@ -495,7 +513,7 @@ local actions = {} do
 			end
 
 			toolAnimTrack:Play(transitionTime)
-			
+
 			entity.state.toolAnimTrack = toolAnimTrack
 			entity.state.toolAnim = name
 			entity.state.toolAnimInstance = anim
@@ -543,7 +561,8 @@ local actions = {} do
 	end
 end
 
-local humanoidStateHandlers: {[string]: (AnimationEntity, ...any) -> ()} = {} do
+local humanoidStateHandlers: { [string]: (AnimationEntity, ...any) -> () } = {}
+do
 	function humanoidStateHandlers.Died(entity: AnimationEntity)
 		entity.state.pose = "Dead"
 	end
@@ -661,11 +680,11 @@ end
 -- Public
 
 function module.animate(parent: Instance, director: Humanoid, performer: Humanoid): AnimateController
-	local connections: {RBXScriptConnection} = {}
+	local connections: { RBXScriptConnection } = {}
 
 	local animator = nil
 	local character = performer.Parent :: Instance
-	
+
 	local found = performer:FindFirstChildWhichIsA("Animator")
 	if found then
 		animator = found
@@ -710,7 +729,7 @@ function module.animate(parent: Instance, director: Humanoid, performer: Humanoi
 			parent = parent,
 		},
 	}
-	
+
 	-- addDefaultAnimations(parent) -- TODO: handle race conditions w/ custom animations loading after
 	stopAllPlayingAnimationsOnHumanoid(performer)
 
@@ -718,18 +737,27 @@ function module.animate(parent: Instance, director: Humanoid, performer: Humanoi
 		actions.refreshAnimationSet(entity, name)
 	end
 
-	table.insert(connections, parent.ChildAdded:Connect(function(child)
-		actions.refreshAnimationSet(entity, child.Name)
-	end))
+	table.insert(
+		connections,
+		parent.ChildAdded:Connect(function(child)
+			actions.refreshAnimationSet(entity, child.Name)
+		end)
+	)
 
-	table.insert(connections, parent.ChildRemoved:Connect(function(child)
-		actions.refreshAnimationSet(entity, child.Name)
-	end))
+	table.insert(
+		connections,
+		parent.ChildRemoved:Connect(function(child)
+			actions.refreshAnimationSet(entity, child.Name)
+		end)
+	)
 
 	for name, callback in humanoidStateHandlers do
-		table.insert(connections, (director :: any)[name]:Connect(function(...)
-			callback(entity, ...)
-		end))
+		table.insert(
+			connections,
+			(director :: any)[name]:Connect(function(...)
+				callback(entity, ...)
+			end)
+		)
 	end
 
 	if character.Parent then

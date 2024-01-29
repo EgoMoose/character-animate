@@ -7,4 +7,3 @@ local found = StarterCharacterScripts:FindFirstChild(Animate.Name)
 if not found then
 	Animate:Clone().Parent = StarterCharacterScripts
 end
-

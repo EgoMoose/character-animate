@@ -10,11 +10,13 @@ export type SerializedAnimation = {
 export type AnimationSet = {
 	count: number,
 	totalWeight: number,
-	connections: {RBXScriptConnection},
-	entries: {{
-		animation: Animation,
-		weight: number,
-	}}
+	connections: { RBXScriptConnection },
+	entries: {
+		{
+			animation: Animation,
+			weight: number,
+		}
+	},
 }
 
 type AnimationStateR15 = {
@@ -69,16 +71,16 @@ type AnimationStateR6 = {
 }
 
 type AnimationEntity = {
-	sets: {[string]: AnimationSet},
+	sets: { [string]: AnimationSet },
 
 	meta: {
 		director: Humanoid,
 		performer: Humanoid,
 		animator: Animator,
 
-		preloaded: {[string]: boolean},
+		preloaded: { [string]: boolean },
 		parent: Instance,
-	}
+	},
 }
 
 export type AnimationEntityR15 = AnimationEntity & {
@@ -92,7 +94,7 @@ export type AnimationEntityR6 = AnimationEntity & {
 -- Manual Director
 
 type ScriptSignal = RBXScriptSignal & {
-	Fire: (...any) -> ()
+	Fire: (...any) -> (),
 }
 
 type SetMovement = (Vector3, number) -> ()
@@ -124,7 +126,7 @@ export type ManualHumanoid = {
 
 export type AnimateController = {
 	cleanup: () -> (),
-	playEmote: (string | Animation) -> (boolean, AnimationTrack?)
+	playEmote: (string | Animation) -> (boolean, AnimationTrack?),
 }
 
 export type AnimateControllerManually = AnimateController & {

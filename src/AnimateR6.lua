@@ -2,7 +2,7 @@
 
 local ExportedTypes = require(script.Parent:WaitForChild("ExportedTypes"))
 
-local CONFIGURATION: {[string]: number} = {
+local CONFIGURATION: { [string]: number } = {
 	HUMANOID_HIP_HEIGHT = 2,
 
 	JUMP_ANIM_DURATION = 0.31,
@@ -17,29 +17,29 @@ type SerializedAnimation = ExportedTypes.SerializedAnimation
 type AnimationSet = ExportedTypes.AnimationSet
 type AnimationEntity = ExportedTypes.AnimationEntityR6
 
-local SERIALIZED_DEFAULT_ANIMATIONS: {[string]: {SerializedAnimation}} = {
-	idle = 	{	
+local SERIALIZED_DEFAULT_ANIMATIONS: { [string]: { SerializedAnimation } } = {
+	idle = {
 		{ id = "rbxassetid://180435571", weight = 9 },
 		{ id = "rbxassetid://180435792", weight = 1 },
 	},
-	walk = 	{ 	
+	walk = {
 		{ id = "rbxassetid://180426354", weight = 10 },
-	}, 
-	run = 	{
+	},
+	run = {
 		{ id = "rbxassetid://180426354", weight = 10 },
-	}, 
-	jump = 	{
+	},
+	jump = {
 		{ id = "rbxassetid://125750702", weight = 10 },
-	}, 
-	fall = 	{
+	},
+	fall = {
 		{ id = "rbxassetid://180436148", weight = 10 },
-	}, 
+	},
 	climb = {
 		{ id = "rbxassetid://180436334", weight = 10 },
-	}, 
-	sit = 	{
+	},
+	sit = {
 		{ id = "rbxassetid://178130996", weight = 10 },
-	},	
+	},
 	toolnone = {
 		{ id = "rbxassetid://182393478", weight = 10 },
 	},
@@ -78,13 +78,13 @@ local SERIALIZED_DEFAULT_ANIMATIONS: {[string]: {SerializedAnimation}} = {
 	},
 }
 
-local EMOTE_NAMES: {[string]: boolean} = {
-	wave = false, 
-	point = false, 
-	dance = true, 
-	dance2 = true, 
-	dance3 = true, 
-	laugh = false, 
+local EMOTE_NAMES: { [string]: boolean } = {
+	wave = false,
+	point = false,
+	dance = true,
+	dance2 = true,
+	dance3 = true,
+	laugh = false,
 	cheer = false,
 }
 
@@ -138,7 +138,8 @@ local function getLegacyToolAnim(tool: Tool): StringValue?
 	return nil
 end
 
-local actions = {} do
+local actions = {}
+do
 	function actions.refreshAnimationSet(entity: AnimationEntity, name: string)
 		local defaults = SERIALIZED_DEFAULT_ANIMATIONS[name]
 		if not defaults then
@@ -159,7 +160,7 @@ local actions = {} do
 		}
 
 		local allowCustomAnimations = true
-		local success = pcall(function() 
+		local success = pcall(function()
 			allowCustomAnimations = game:GetService("StarterPlayer").AllowCustomAnimations
 		end)
 
@@ -169,13 +170,19 @@ local actions = {} do
 
 		local config = entity.meta.parent:FindFirstChild(name)
 		if allowCustomAnimations and config then
-			table.insert(set.connections, config.ChildAdded:Connect(function()
-				actions.refreshAnimationSet(entity, name)
-			end))
+			table.insert(
+				set.connections,
+				config.ChildAdded:Connect(function()
+					actions.refreshAnimationSet(entity, name)
+				end)
+			)
 
-			table.insert(set.connections, config.ChildRemoved:Connect(function()
-				actions.refreshAnimationSet(entity, name)
-			end))
+			table.insert(
+				set.connections,
+				config.ChildRemoved:Connect(function()
+					actions.refreshAnimationSet(entity, name)
+				end)
+			)
 
 			for _, child in config:GetChildren() do
 				if child:IsA("Animation") then
@@ -193,17 +200,26 @@ local actions = {} do
 						weight = weight,
 					}
 
-					table.insert(set.connections, child.ChildAdded:Connect(function()
-						actions.refreshAnimationSet(entity, name)
-					end))
+					table.insert(
+						set.connections,
+						child.ChildAdded:Connect(function()
+							actions.refreshAnimationSet(entity, name)
+						end)
+					)
 
-					table.insert(set.connections, child.ChildRemoved:Connect(function()
-						actions.refreshAnimationSet(entity, name)
-					end))
+					table.insert(
+						set.connections,
+						child.ChildRemoved:Connect(function()
+							actions.refreshAnimationSet(entity, name)
+						end)
+					)
 
-					table.insert(set.connections, child.Changed:Connect(function()
-						actions.refreshAnimationSet(entity, name)
-					end))
+					table.insert(
+						set.connections,
+						child.Changed:Connect(function()
+							actions.refreshAnimationSet(entity, name)
+						end)
+					)
 				end
 			end
 		end
@@ -307,7 +323,7 @@ local actions = {} do
 			local currentAnimTrack = entity.meta.animator:LoadAnimation(anim)
 			currentAnimTrack.Priority = Enum.AnimationPriority.Core
 			currentAnimTrack:Play(transitionTime)
-			
+
 			entity.state.currentAnimTrack = currentAnimTrack
 			entity.state.currentAnim = name
 			entity.state.currentAnimInstance = anim
@@ -347,7 +363,7 @@ local actions = {} do
 			end
 
 			toolAnimTrack:Play(transitionTime)
-			
+
 			entity.state.toolAnimTrack = toolAnimTrack
 			entity.state.toolAnim = name
 			entity.state.toolAnimInstance = anim
@@ -395,7 +411,8 @@ local actions = {} do
 	end
 end
 
-local humanoidStateHandlers: {[string]: (AnimationEntity, ...any) -> ()} = {} do
+local humanoidStateHandlers: { [string]: (AnimationEntity, ...any) -> () } = {}
+do
 	function humanoidStateHandlers.Died(entity: AnimationEntity)
 		entity.state.pose = "Dead"
 	end
@@ -524,7 +541,7 @@ end
 -- Public
 
 function module.animate(parent: Instance, director: Humanoid, performer: Humanoid): AnimateController
-	local connections: {RBXScriptConnection} = {}
+	local connections: { RBXScriptConnection } = {}
 
 	local animator = nil
 	local character = performer.Parent :: Instance
@@ -577,7 +594,7 @@ function module.animate(parent: Instance, director: Humanoid, performer: Humanoi
 			parent = parent,
 		},
 	}
-	
+
 	-- addDefaultAnimations(parent) -- TODO: handle race conditions w/ custom animations loading after
 	stopAllPlayingAnimationsOnHumanoid(performer)
 
@@ -585,18 +602,27 @@ function module.animate(parent: Instance, director: Humanoid, performer: Humanoi
 		actions.refreshAnimationSet(entity, name)
 	end
 
-	table.insert(connections, parent.ChildAdded:Connect(function(child)
-		actions.refreshAnimationSet(entity, child.Name)
-	end))
+	table.insert(
+		connections,
+		parent.ChildAdded:Connect(function(child)
+			actions.refreshAnimationSet(entity, child.Name)
+		end)
+	)
 
-	table.insert(connections, parent.ChildRemoved:Connect(function(child)
-		actions.refreshAnimationSet(entity, child.Name)
-	end))
+	table.insert(
+		connections,
+		parent.ChildRemoved:Connect(function(child)
+			actions.refreshAnimationSet(entity, child.Name)
+		end)
+	)
 
 	for name, callback in humanoidStateHandlers do
-		table.insert(connections, (director :: any)[name]:Connect(function(...)
-			callback(entity, ...)
-		end))
+		table.insert(
+			connections,
+			(director :: any)[name]:Connect(function(...)
+				callback(entity, ...)
+			end)
+		)
 	end
 
 	if character.Parent then
