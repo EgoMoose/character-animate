@@ -1,0 +1,15 @@
+{
+	"luau-lsp.require.mode": "relativeToFile",
+
+	"[lua]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "JohnnyMorganz.stylua"
+	},
+	"[luau]": {
+		"editor.formatOnSave": true,
+		"editor.defaultFormatter": "JohnnyMorganz.stylua"
+	},
+
+	"luau-lsp.sourcemap.rojoProjectFile": "develop.project.json",
+	"stylua.targetReleaseVersion": "latest"
+}

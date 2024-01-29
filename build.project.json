@@ -1,0 +1,15 @@
+{
+	"name": "CharacterAnimate",
+	"tree": {
+		"$className": "ModuleScript",
+		"$properties": {
+			"Source": "return require(script.Packages._TargetPackage)"
+		},
+		"Packages": {
+			"$path": "Packages",
+			"_TargetPackage": {
+				"$path": "src"
+			}
+		}
+	}
+}
